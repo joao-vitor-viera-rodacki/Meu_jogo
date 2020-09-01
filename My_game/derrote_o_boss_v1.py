@@ -112,10 +112,7 @@ def partida():
             
             else:
                 break
-            
-            
 
-  
         
         if opção == usuario.abilidades['Ataque Magico de Gelo']:
            
@@ -145,8 +142,7 @@ def partida():
         
         if opção == usuario.abilidades['Ataque Ariscado']:
 
-            
-
+          
             inimigo.tipo_atake = randint(1,2)
             
             ini_dano_min = inimigo.dano - (inimigo.dano // 2)
@@ -178,8 +174,7 @@ def partida():
             else:    
                 contagem_de_atake_especial -= 1
 
-                
-
+         
                 if contagem_de_atake_especial < 0 :
                     print("Voçê não tem mais power para realizar esse ataque !!")
                 
