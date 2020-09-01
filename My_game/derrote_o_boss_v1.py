@@ -102,7 +102,7 @@ def partida():
             print('_-'*20)           
             try:
 
-                    #import ipdb; ipdb.set_trace()
+                    
                     opção = str(input('Escolha : '))
                    
                 
@@ -140,7 +140,7 @@ def partida():
             print(f'''O inimigo levou {usu_dano_total} de da 
             HP Inimigo :: {inimigo.hp}''')
             print('__-'*20)
-            print(f'''Você levou {ini_dano_total}
+            print(f'''Você levou {ini_dano_total} De dano
             HP Seu :: {usuario.hp}''')
         
         if opção == usuario.abilidades['Ataque Ariscado']:
@@ -167,7 +167,7 @@ def partida():
             print(f'''O inimigo levou {usu_dano_total} de da 
             HP Inimigo :: {inimigo.hp}''')
             print('__-'*20)
-            print(f'''Você levou {ini_dano_total}
+            print(f'''Você levou {ini_dano_total} De dano
             HP Seu :: {usuario.hp}''')
         
         if opção == usuario.abilidades['Ataque especial'] :
@@ -205,7 +205,7 @@ def partida():
                     print(f'''O inimigo levou {usu_dano_total} De Dano 
                     HP Inimigo :: {inimigo.hp}''')
                     print('__-'*20)
-                    print(f'''Você levou {ini_dano_total}
+                    print(f'''Você levou {ini_dano_total} De dano
                     HP Seu :: {usuario.hp}''')    
 
         if 'Golpe De Fogo' in usuario.abilidades:
@@ -276,7 +276,8 @@ def partida():
             print(f'Parabens {usuario.nome}. Você ganhou !!')
            
             usuario.xp += 100
-            if usuario.xp >= 100:
+            proximo_nivel = (usuario.level * 100) + 100
+            if usuario.xp >= proximo_nivel :
                 usuario.level += 1
                 inimigo.level += 1 
 
