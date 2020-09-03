@@ -86,5 +86,5 @@ _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
                                 verificador = True
 
             else:
-                print('você não tem mais pontos !')
+                print('você não tem pontos !')
                 break
