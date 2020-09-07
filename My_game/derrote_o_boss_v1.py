@@ -3,6 +3,9 @@ from random import randint
 import arvore_de_abilidades
 
 
+#def ataque(habilidade, especial=false):
+    
+        
 class Inimigo:
     def __init__(self):
         
@@ -10,6 +13,8 @@ class Inimigo:
         self.level = 2
         self.dano  = (self.level // 2) * 10
         self.hp =  (self.level // 2) * 200
+
+
 
 
 class Jogador:
@@ -22,6 +27,8 @@ class Jogador:
         self.pontos_de_abilidades = 0
         self.hp = (self.level // 2) * 100
         self.nome = nome
+        self.contagem_de_atake_especial = 2
+    
 
 usuario = Jogador('dragonogt')
 
@@ -77,7 +84,7 @@ def partida():
 #-----------------------------------
     
     inimigo = Inimigo()
-    contagem_de_atake_especial = 2
+    
 
     print('Entrando na partida')
     print('1..')
@@ -96,7 +103,7 @@ def partida():
             for key, values in usuario.abilidades.items():
 
                 if values == '3' : 
-                    print(f'[{values}] : {key} : {contagem_de_atake_especial} ataques restantes ...')
+                    print(f'[{values}] : {key} : {usuario.contagem_de_atake_especial} ataques restantes ...')
                 else:
                     print(f'[{values}] : {key}')
             print('_-'*20)           
@@ -168,14 +175,14 @@ def partida():
         
         if opção == usuario.abilidades['Ataque especial'] :
             
-            if contagem_de_atake_especial == 0 :
+            if usuario.contagem_de_atake_especial == 0 :
                 print("Voçê não tem mais power para realizar esse ataque !!")
 
             else:    
-                contagem_de_atake_especial -= 1
+                usuario.contagem_de_atake_especial -= 1
 
          
-                if contagem_de_atake_especial < 0 :
+                if usuario.contagem_de_atake_especial < 0 :
                     print("Voçê não tem mais power para realizar esse ataque !!")
                 
                 else:
