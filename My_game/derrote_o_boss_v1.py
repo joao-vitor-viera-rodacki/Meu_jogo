@@ -22,8 +22,14 @@ class Jogador:
 
         self.level = 2
         self.xp = 0
-        self.abilidades = { 'Ataque Magico de Gelo' : '1' , 'Ataque Ariscado' : '2' , 'Ataque especial' : '3'}
         self.dano  = (self.level // 2) * 10
+        self.usu_dano_max = self.dano + 10
+        self.usu_dano_min = self.dano
+        self.abilidades = {   "3": {'nome': 'Ataque especial','danoMAX': 200, 'danoMIN':0},
+                              "2": {'nome': 'Ataque Magico de Gelo', 'danoMAX': self.usu_dano_max ,'danoMIN':self.usu_dano_min},
+                              "1":{'nome': 'Ataque Ariscado', 'danoMAX': self.usu_dano_max + 100,'danoMIN': 0 } }
+
+        
         self.pontos_de_abilidades = 0
         self.hp = (self.level // 2) * 100
         self.nome = nome
@@ -31,6 +37,8 @@ class Jogador:
     
 
 usuario = Jogador('dragonogt')
+
+inimigo = Inimigo()
 
 def menu():
     
@@ -76,15 +84,13 @@ def menu():
                 print('_-'*20)
 
 def partida():
-#-----------------------------------
-    
-    usu_dano_min = usuario.dano
-    usu_dano_max = usuario.dano + 10
 
-#-----------------------------------
-    
-    inimigo = Inimigo()
-    
+    inimigo_hp_padrão = inimigo.hp
+    usuario_hp_padrão = usuario.hp
+    def recuperação():
+        inimigo.hp = inimigo_hp_padrão
+        usuario.hp = usuario_hp_padrão
+        usuario.contagem_de_atake_especial = 2
 
     print('Entrando na partida')
     print('1..')
@@ -95,125 +101,124 @@ def partida():
     sleep(0.80)
     print('Já..')
     print('_-'*20)
-    while True :
+    while True:
         while True:
+                        
+            if inimigo.hp <= 0 :
+                print('===='* 20)
+                print(f'Parabens {usuario.nome}. Você ganhou !!')
+                
+                usuario.xp += 100
+                proximo_nivel = (usuario.level * 100) + 100
+                recuperação()
+
+                if usuario.xp >= proximo_nivel :
+                    usuario.level += 1
+                    inimigo.level += 1 
+
+                    usuario.dano  = (usuario.level // 2) * 10
+                    usuario.hp = (usuario.level // 2) * 100
+                    usuario.xp = 0
+                    usuario.pontos_de_abilidades += 3 
+                    print('Você subio de nivel !!!')
+                    print(f'Nivel atual {usuario.level}')
+
+                menu()
+
+            if usuario.hp <= 0 :
+                recuperação()
+                print(f'{usuario.nome} você perdeu. Tente Novamente.. ')
+
+                menu()
+
             print('_-'*20)
             print(f'''Painel de skils''')
 
             for key, values in usuario.abilidades.items():
-
-                if values == '3' : 
-                    print(f'[{values}] : {key} : {usuario.contagem_de_atake_especial} ataques restantes ...')
+                if key == '3':
+                    print(f'[{key}] ; {values["nome"]} [[ Dano Maximo {values["danoMAX"]}// Dano minimo {values["danoMIN"]}||{usuario.contagem_de_atake_especial} Ataques restantes...]]')
                 else:
-                    print(f'[{values}] : {key}')
+                    print(f'[{key}] ; {values["nome"]} [[ Dano Maximo {values["danoMAX"]}// Dano minimo {values["danoMIN"]}]]')
             print('_-'*20)           
             try:
 
+                opção = str(input('Escolha : '))
                     
-                    opção = str(input('Escolha : '))
-                   
-                
-
             except:
                 print('Digite novamente...')
             
             else:
-                break
+                atacar(opcao=opção)
+            
+            
+        
+def atacar(opcao=0):
+    
+    if opcao == usuario.abilidades['2']:
+
+        inimigo.tipo_atake = randint(1,2)
+        
+        ini_dano_min = inimigo.dano - (inimigo.dano // 2)
+
+        if inimigo.tipo_atake == 1:
+            ini_dano_max = inimigo.dano 
+        elif inimigo.tipo_atake == 2:
+            ini_dano_max = inimigo.dano + 15
+
+        usu_dano_total =  randint(usuario.usu_dano_min, usuario.usu_dano_max)
+        ini_dano_total = randint(ini_dano_min, ini_dano_max)
+        
+        
+        usuario.hp -= ini_dano_total
+        inimigo.hp -= usu_dano_total
+        
+        print('__-'*20)
+        print(f'''O inimigo levou {usu_dano_total} de da 
+        HP Inimigo :: {inimigo.hp}''')
+        print('__-'*20)
+        print(f'''Você levou {ini_dano_total} De dano
+        HP Seu :: {usuario.hp}''')
+
+    if opcao == usuario.abilidades['1']:
 
         
-        if opção == usuario.abilidades['Ataque Magico de Gelo']:
-           
-            
-            inimigo.tipo_atake = randint(1,2)
-            
-            ini_dano_min = inimigo.dano - (inimigo.dano // 2)
-
-            if inimigo.tipo_atake == 1:
-                ini_dano_max = inimigo.dano 
-            elif inimigo.tipo_atake == 2:
-                ini_dano_max = inimigo.dano + 15
-
-            usu_dano_total =  randint(usu_dano_min, usu_dano_max)
-            ini_dano_total = randint(ini_dano_min, ini_dano_max)
-            
-            
-            usuario.hp -= ini_dano_total
-            inimigo.hp -= usu_dano_total
-           
-            print('__-'*20)
-            print(f'''O inimigo levou {usu_dano_total} de da 
-            HP Inimigo :: {inimigo.hp}''')
-            print('__-'*20)
-            print(f'''Você levou {ini_dano_total} De dano
-            HP Seu :: {usuario.hp}''')
+        inimigo.tipo_atake = randint(1,2)
         
-        if opção == usuario.abilidades['Ataque Ariscado']:
+        ini_dano_min = inimigo.dano - (inimigo.dano // 2)
 
-          
-            inimigo.tipo_atake = randint(1,2)
-            
-            ini_dano_min = inimigo.dano - (inimigo.dano // 2)
+        if inimigo.tipo_atake == 1:
+            ini_dano_max = inimigo.dano 
+        elif inimigo.tipo_atake == 2:
+            ini_dano_max = inimigo.dano + 15
 
-            if inimigo.tipo_atake == 1:
-                ini_dano_max = inimigo.dano 
-            elif inimigo.tipo_atake == 2:
-                ini_dano_max = inimigo.dano + 15
-
-            usu_dano_total =  randint( 0 ,usu_dano_max + 100 )
-            ini_dano_total = randint(ini_dano_min, ini_dano_max )
-            
-           
-            usuario.hp -= ini_dano_total
-            inimigo.hp -= usu_dano_total
-           
-            print('__-'*20)
-            print(f'''O inimigo levou {usu_dano_total} de da 
-            HP Inimigo :: {inimigo.hp}''')
-            print('__-'*20)
-            print(f'''Você levou {ini_dano_total} De dano
-            HP Seu :: {usuario.hp}''')
+        usu_dano_total =  randint( 0 ,usuario.usu_dano_max + 100 )
+        ini_dano_total = randint(ini_dano_min, ini_dano_max )
         
-        if opção == usuario.abilidades['Ataque especial'] :
-            
-            if usuario.contagem_de_atake_especial == 0 :
+        
+        usuario.hp -= ini_dano_total
+        inimigo.hp -= usu_dano_total
+        
+        print('__-'*20)
+        print(f'''O inimigo levou {usu_dano_total} de da 
+        HP Inimigo :: {inimigo.hp}''')
+        print('__-'*20)
+        print(f'''Você levou {ini_dano_total} De dano
+        HP Seu :: {usuario.hp}''')
+
+    if opcao == usuario.abilidades['3'] :
+        
+        if usuario.contagem_de_atake_especial == 0 :
+            print("Voçê não tem mais power para realizar esse ataque !!")
+
+        else:    
+            usuario.contagem_de_atake_especial -= 1
+
+        
+            if usuario.contagem_de_atake_especial < 0 :
                 print("Voçê não tem mais power para realizar esse ataque !!")
-
-            else:    
-                usuario.contagem_de_atake_especial -= 1
-
-         
-                if usuario.contagem_de_atake_especial < 0 :
-                    print("Voçê não tem mais power para realizar esse ataque !!")
-                
-                else:
-                
-                    inimigo.tipo_atake  = randint(1,2)
-                    
-                    ini_dano_min = inimigo.dano - (inimigo.dano // 2)
-
-                    if inimigo.tipo_atake == 1 :
-                        ini_dano_max = inimigo.dano 
-                    
-                    elif inimigo.tipo_atake == 2 :
-                        ini_dano_max = inimigo.dano + 15
-
-                    usu_dano_total =  randint(80 , 200)
-                    ini_dano_total = randint(ini_dano_min, ini_dano_max)
-
-                    usuario.hp -= ini_dano_total
-                    inimigo.hp -= usu_dano_total
-
-                    print('__-'*20)
-                    print(f'''O inimigo levou {usu_dano_total} De Dano 
-                    HP Inimigo :: {inimigo.hp}''')
-                    print('__-'*20)
-                    print(f'''Você levou {ini_dano_total} De dano
-                    HP Seu :: {usuario.hp}''')    
-
-        if 'Golpe De Fogo' in usuario.abilidades:
             
-            if opção == usuario.abilidades['Golpe De Fogo']:
-                                
+            else:
+            
                 inimigo.tipo_atake  = randint(1,2)
                 
                 ini_dano_min = inimigo.dano - (inimigo.dano // 2)
@@ -224,27 +229,52 @@ def partida():
                 elif inimigo.tipo_atake == 2 :
                     ini_dano_max = inimigo.dano + 15
 
-
-                usu_dano_total = randint(80,100 + (usuario.dano // 4))
-
+                usu_dano_total =  randint(80 , 200)
                 ini_dano_total = randint(ini_dano_min, ini_dano_max)
 
                 usuario.hp -= ini_dano_total
                 inimigo.hp -= usu_dano_total
 
+                print('__-'*20)
+                print(f'''O inimigo levou {usu_dano_total} De Dano 
+                HP Inimigo :: {inimigo.hp}''')
+                print('__-'*20)
+                print(f'''Você levou {ini_dano_total} De dano
+                HP Seu :: {usuario.hp}''')    
 
-                print('_-'*20)
-                print(f'''O inimigo levou {usu_dano_total} De Dano
-                HP inimigo {inimigo.hp}''')
-                print('_-'*20)
-                print(f'''Você levou {ini_dano_total} De Dano
-                Seu HP {usuario.hp}''')
-
-
-
-        if 'Exploção de Fogo' in usuario.abilidades:
+    if 'Golpe De Fogo' in usuario.abilidades:
+        
+        if opcao == usuario.abilidades['Golpe De Fogo']:
+                            
+            inimigo.tipo_atake  = randint(1,2)
             
-            if opção == usuario.abilidades['Exploção de Fogo']:
+            ini_dano_min = inimigo.dano - (inimigo.dano // 2)
+
+            if inimigo.tipo_atake == 1 :
+                ini_dano_max = inimigo.dano 
+            
+            elif inimigo.tipo_atake == 2 :
+                ini_dano_max = inimigo.dano + 15
+
+
+            usu_dano_total = randint(80,100 + (usuario.dano // 4))
+
+            ini_dano_total = randint(ini_dano_min, ini_dano_max)
+
+            usuario.hp -= ini_dano_total
+            inimigo.hp -= usu_dano_total
+
+
+            print('_-'*20)
+            print(f'''O inimigo levou {usu_dano_total} De Dano
+            HP inimigo {inimigo.hp}''')
+            print('_-'*20)
+            print(f'''Você levou {ini_dano_total} De Dano
+            Seu HP {usuario.hp}''')
+
+    if 'Exploção de Fogo' in usuario.abilidades:
+            
+            if opcao == usuario.abilidades['Exploção de Fogo']:
                                 
                 inimigo.tipo_atake  = randint(1,2)
                 
@@ -272,33 +302,7 @@ def partida():
                 print(f'''Você levou {ini_dano_total} De Dano
                 Seu HP {usuario.hp}''')
     
-        
-        if inimigo.hp <= 0 :
-            print('===='* 20)
-            print(f'Parabens {usuario.nome}. Você ganhou !!')
-           
-            usuario.xp += 100
-            proximo_nivel = (usuario.level * 100) + 100
-            if usuario.xp >= proximo_nivel :
-                usuario.level += 1
-                inimigo.level += 1 
-
-                usuario.dano  = (usuario.level // 2) * 10
-                usuario.hp = (usuario.level // 2) * 100
-                usuario.xp = 0
-                usuario.pontos_de_abilidades += 3 
-                print('Você subio de nivel !!!')
-                print(f'Nivel atual {usuario.level}')
-
-            menu()
-      
-        if usuario.hp <= 0 :
-            print(f'{usuario.nome} você perdeu. Tente Novamente.. ')
-            menu()
-
-
 def arvore_de_evolução():
-   
 
     arvore_de_abilidades.abilidades_fogo(usuario.level , usuario.pontos_de_abilidades, usuario )
     menu()
