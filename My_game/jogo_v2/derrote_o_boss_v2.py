@@ -12,6 +12,12 @@ class Inimigo:
         self.hp =  (self.level // 2) * 200
 
 
+DEFAULT_ATK =  {
+    'Ataque Especial': 100,
+    'Ataque Ariscado': 200,
+    'Ataque Magico De Gelo': 300
+}
+
 
 
 class Jogador:
@@ -23,21 +29,37 @@ class Jogador:
         self.usu_dano_max = self.dano + 10
         self.usu_dano_min = self.dano
 
-        self.abilidades = {
-                              'Ataque Ariscado':{'botão': '1' , 'danoMAX': self.usu_dano_max + 100,'danoMIN': 0 },
-                              'Ataque Magico de Gelo': {'botão': '2', 'danoMAX': self.usu_dano_max ,'danoMIN':self.usu_dano_min},
-                              'Ataque Especial': {'botão': '3' ,'danoMAX': 200, 'danoMIN':0}
-                              }
+        self.abilidades = DEFAULT_ATK
        
-        self.botões_abilidades = { '1' : {'abilidade': 'Ataque Ariscado'},
-                                   '2' : {'abilidade' : 'Ataque Magico De Gelo'},
-                                   '3' : {'abilidade' : 'Ataque Especial'}}
+        self.botões_abilidades = { '1' : 'Ataque Ariscado',
+                                   '2' : 'Ataque Magico De Gelo',
+                                   '3' : 'Ataque Especial'}
 
         self.pontos_de_abilidades = 10
         self.hp = (self.level // 2) * 100
         self.nome = nome
         self.contagem_de_atake_especial = 2
     
+    def add_habilidade(self, habilidade):
+        self.abilidades.update(habilidade)
+    
+    def atacar(self, botao):
+        nome_abilidade = self.botões_abilidades[botao]
+        valor_abilidade = self.abilidades[nome_abilidade]
+        dano_total = self.calcula_dano(valor_abilidade)
+        print(f'{nome_abilidade} dano: {dano_total}')
+        return dano_total
+
+    def atacar_player(self, botao, player):
+        dano_total = self.atacar(botao)
+        player.hp -= dano_total
+
+    def calcula_dano(self, dano_base):
+        valor_jogador = randint(self.usu_dano_min, self.usu_dano_max)
+        return valor_jogador + dano_base
+
+
+
 
 usuario = Jogador('dragonogt')
 
