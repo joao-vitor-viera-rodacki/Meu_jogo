@@ -1,6 +1,6 @@
 from time import sleep
 from random import randint
-from arvore_de_abilidades import abilidades_fogo
+
     
 
 
