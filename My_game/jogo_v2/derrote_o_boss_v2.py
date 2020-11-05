@@ -163,7 +163,8 @@ def menu():
     Input = input(str('\033[31m===> : \033[m'))
 
     if Input == '0':
-        KeyboardInterrupt
+        print("Vlw flw!")
+        return
 
     if Input == '1':
         while True :
