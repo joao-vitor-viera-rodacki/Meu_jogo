@@ -1,7 +1,7 @@
-from time import sleep
 from random import randint
-from jogo import colors
+from time import sleep
 
+from jogo import colors
 
 DEFAULT_ATK =  {
     'Ataque Especial': 300,
