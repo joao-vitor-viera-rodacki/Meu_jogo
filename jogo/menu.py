@@ -1,6 +1,6 @@
 from time import sleep
 from random import randint
-from jogo import cores
+from jogo import colors
 
 
 DEFAULT_ATK =  {
@@ -76,38 +76,32 @@ def cont_especial_atk(player):
         return True
 
 def interface(player):
-        verificador = cont_especial_atk(player)
+        tem_ataque_especial = cont_especial_atk(player)
         
-        print(f'\033[1;36m{player.nome}\033[1;33m] Sua vez de atacar !!')
+        print(colors.green.format(player.nome) + ' Sua vez de atacar !!')
         print(f'Menu De skils')
-        print('-'*20)
-        for botao, habilidade in player.botões_habilidades.items():
-            if verificador == False :
-                if botao == '3':
-                    print(f'\033[31m[{botao}] {habilidade}\033[m')
-                else:
-                    print(f'[{botao}] {habilidade}')
-            else:        
-                print(f'[{botao}] {habilidade}')
-        print('\033[1;33m-'*20,'\033[m')
-        while True:
-            Input = input(str('===>> : \033[m'))
+        print(colors.yellow.format('-'*20))
 
-            if Input == '3':
-                
-                if verificador :
-                    return Input
-                else:
-                    print('você não tem mais power para esse poder')
+        for botao, habilidade in player.botões_habilidades.items():
+            msg_padrao = f'[{botao}] {habilidade}'
+            
+            if botao == '3' and not tem_ataque_especial:
+                print(colors.red.format(msg_padrao))
+            else:        
+                print(colors.blue.format(msg_padrao))
+
+        print(colors.yellow.format('-'*20))
+
+        while True:
+            Input = input(colors.yellow.format('===> : '))
+
+            if Input == '3' and not tem_ataque_especial:
+                print(colors.red.format('você não tem mais power para esse poder'))
             else: 
                 return Input
 
 def verifica_hp_player(player):
-
-    if player.hp <= 0 :
-        return True
-    else:
-        return False
+    return player.hp <= 0 
 
 def interface_habilidades (player):
     
