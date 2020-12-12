@@ -1,7 +1,7 @@
 from random import randint
 from time import sleep
 
-from jogo import colors
+import colors
 
 DEFAULT_ATK =  {
     'Ataque Especial': 300,
@@ -30,9 +30,11 @@ class Jogador:
         self.nome = nome
         self.contagem_de_atake_especial = 2
     
-
+    def regenera_hp(self):
+        self.hp = (self.level // 2) * 500
     
     def _atacar(self, botao):
+
         nome_abilidade = self.botões_habilidades[botao]
         valor_abilidade = self.habilidades[nome_abilidade]
         dano_total = self.calcula_dano(valor_abilidade)
@@ -68,26 +70,37 @@ class Jogador:
 player1 = Jogador('joao')
 player2 = Jogador('LUCAS')
 
-def cont_especial_atk(player):
-    player.contagem_de_atake_especial -= 1
-    if player.contagem_de_atake_especial <= 0:
-        return False
-    else :
-        return True
+def cont_especial_atk(player , verifica=False):
+    if verifica :
 
+        if player.contagem_de_atake_especial <= 0:
+            return False
+        else :
+            return True
+    else: 
+        player.contagem_de_atake_especial -= 1
+        
+        if player.contagem_de_atake_especial <= 0:
+            return False
+        else :
+            return True
+
+ 
 def interface(player):
-        tem_ataque_especial = cont_especial_atk(player)
+        cont_ataque_especial = cont_especial_atk(player , True)
         
         print(colors.green.format(player.nome) + ' Sua vez de atacar !!')
         print(f'Menu De skils')
         print(colors.yellow.format('-'*20))
 
         for botao, habilidade in player.botões_habilidades.items():
-            msg_padrao = f'[{botao}] {habilidade}'
             
-            if botao == '3' and not tem_ataque_especial:
+            msg_padrao = f'[{botao}] {habilidade}'
+
+            if botao == '3' and not cont_ataque_especial :
                 print(colors.red.format(msg_padrao))
-            else:        
+            else:      
+
                 print(colors.blue.format(msg_padrao))
 
         print(colors.yellow.format('-'*20))
@@ -95,8 +108,11 @@ def interface(player):
         while True:
             Input = input(colors.yellow.format('===> : '))
 
-            if Input == '3' and not tem_ataque_especial:
+            if Input == '3' and not cont_ataque_especial:
                 print(colors.red.format('você não tem mais power para esse poder'))
+            elif Input == '3' and cont_ataque_especial:
+                cont_ataque_especial = cont_especial_atk(player)
+                return Input
             else: 
                 return Input
 
@@ -164,12 +180,17 @@ def menu():
 
             if verifica_hp_player(player1):
                 print(f'{player1.nome} Você perdeu !!')
+                player1.regenera_hp()
+                player2.regenera_hp()
                 break
             if verifica_hp_player(player2):
                 print(f'{player2.nome} Você perdeu !!')
+                player2.regenera_hp()
+                player1.regenera_hp()
                 break
 
             Input = interface(player1)
+            
             player1.atacar_player(Input,player2)
             Input = interface(player2)
             player2.atacar_player(Input,player1)
@@ -213,3 +234,4 @@ def menu():
               
     menu()
         
+menu()
