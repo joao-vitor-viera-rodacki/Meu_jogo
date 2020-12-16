@@ -1,8 +1,7 @@
-from time import sleep
 from random import randint
+from time import sleep
 
-    
-
+import colors
 
 DEFAULT_ATK =  {
     'Ataque Especial': 300,
@@ -31,9 +30,11 @@ class Jogador:
         self.nome = nome
         self.contagem_de_atake_especial = 2
     
-
+    def regenera_hp(self):
+        self.hp = (self.level // 2) * 500
     
     def _atacar(self, botao):
+
         nome_abilidade = self.botões_habilidades[botao]
         valor_abilidade = self.habilidades[nome_abilidade]
         dano_total = self.calcula_dano(valor_abilidade)
@@ -69,46 +70,54 @@ class Jogador:
 player1 = Jogador('joao')
 player2 = Jogador('LUCAS')
 
-def cont_especial_atk(player):
-    player.contagem_de_atake_especial -= 1
-    if player.contagem_de_atake_especial <= 0:
-        return False
-    else :
-        return True
+def cont_especial_atk(player , verifica=False):
+    if verifica :
 
-def interface(player):
-        verificador = cont_especial_atk(player)
+        if player.contagem_de_atake_especial <= 0:
+            return False
+        else :
+            return True
+    else: 
+        player.contagem_de_atake_especial -= 1
         
-        print(f'\033[1;36m{player.nome}\033[1;33m] Sua vez de atacar !!')
-        print(f'Menu De skils')
-        print('-'*20)
-        for botao, habilidade in player.botões_habilidades.items():
-            if verificador == False :
-                if botao == '3':
-                    print(f'\033[31m[{botao}] {habilidade}\033[m')
-                else:
-                    print(f'[{botao}] {habilidade}')
-            else:        
-                print(f'[{botao}] {habilidade}')
-        print('\033[1;33m-'*20,'\033[m')
-        while True:
-            Input = input(str('===>> : \033[m'))
+        if player.contagem_de_atake_especial <= 0:
+            return False
+        else :
+            return True
 
-            if Input == '3':
-                
-                if verificador :
-                    return Input
-                else:
-                    print('você não tem mais power para esse poder')
+ 
+def interface(player):
+        cont_ataque_especial = cont_especial_atk(player , True)
+        
+        print(colors.green.format(player.nome) + ' Sua vez de atacar !!')
+        print(f'Menu De skils')
+        print(colors.yellow.format('-'*20))
+
+        for botao, habilidade in player.botões_habilidades.items():
+            
+            msg_padrao = f'[{botao}] {habilidade}'
+
+            if botao == '3' and not cont_ataque_especial :
+                print(colors.red.format(msg_padrao))
+            else:      
+
+                print(colors.blue.format(msg_padrao))
+
+        print(colors.yellow.format('-'*20))
+
+        while True:
+            Input = input(colors.yellow.format('===> : '))
+
+            if Input == '3' and not cont_ataque_especial:
+                print(colors.red.format('você não tem mais power para esse poder'))
+            elif Input == '3' and cont_ataque_especial:
+                cont_ataque_especial = cont_especial_atk(player)
+                return Input
             else: 
                 return Input
 
 def verifica_hp_player(player):
-
-    if player.hp <= 0 :
-        return True
-    else:
-        return False
+    return player.hp <= 0 
 
 def interface_habilidades (player):
     
@@ -163,19 +172,25 @@ def menu():
     Input = input(str('\033[31m===> : \033[m'))
 
     if Input == '0':
-        KeyboardInterrupt
+        print("Vlw flw!")
+        return
 
     if Input == '1':
         while True :
 
             if verifica_hp_player(player1):
                 print(f'{player1.nome} Você perdeu !!')
+                player1.regenera_hp()
+                player2.regenera_hp()
                 break
             if verifica_hp_player(player2):
                 print(f'{player2.nome} Você perdeu !!')
+                player2.regenera_hp()
+                player1.regenera_hp()
                 break
 
             Input = interface(player1)
+            
             player1.atacar_player(Input,player2)
             Input = interface(player2)
             player2.atacar_player(Input,player1)
