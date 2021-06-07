@@ -26,7 +26,7 @@ class Jogador:
                                    '2' : 'Ataque Magico De Gelo',
                                    '3' : 'Ataque Especial'}
 
-        self.pontos_de_habilidades = 10
+        self.pontos_de_habilidades = 0
         self.hp = (self.level // 2) * 500
         self.nome = nome
         self.contagem_de_atake_especial = 2
